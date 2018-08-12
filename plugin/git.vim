@@ -283,4 +283,28 @@ function! s:BufferReadOnly()
     setlocal nomodifiable readonly
 endfunction
 
+function! s:FindFolder(folder)
+    let current_dir = expand("%:p:h") 
+
+    let i = 0
+    while i <= 10
+        " echo "Looking for folder " . a:folder . " at " . current_dir
+        let found = globpath(current_dir, a:folder, 0, 1)
+
+        if len(found) > 0
+            " echom "Found folder " . found[0]
+            let l:folder = found[0]
+            python3 << EOF
+import os
+import vim
+vim.command('let l:folder = \'' + os.path.abspath(vim.eval('l:folder')) + '\'')
+EOF
+            return l:folder
+        endif
+
+        let i = i + 1
+        let current_dir = current_dir . '/..'
+    endwhile
+endfunction
+
 " }}}
