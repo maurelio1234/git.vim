@@ -9,7 +9,7 @@ function! git#GetCurrentBranch()
 endfunction
 
 function! git#PushToCurrentBranch()
-    call helpers#OpenScratchBuffer()
+    call git#helpers#OpenScratchBuffer()
     execute "normal! gg"
     silent execute "read !bash -c \"git push origin HEAD:" .  GetCurrentBranch() . "\""
     execute "normal! gg"
@@ -17,7 +17,7 @@ function! git#PushToCurrentBranch()
 endfunction
 
 function! git#GitFetchAndMergeOriginMaster()
-    call helpers#OpenScratchBuffer()
+    call git#helpers#OpenScratchBuffer()
     execute "normal! gg"
     silent! execute "read !bash -c \"git fetch\""
     silent! execute "read !bash -c \"git merge origin/master\""
@@ -25,7 +25,7 @@ function! git#GitFetchAndMergeOriginMaster()
 endfunction
 
 function! git#GitRefLog()
-    call helpers#OpenScratchBuffer()
+    call git#helpers#OpenScratchBuffer()
     execute "normal! gg"
     execute "read !bash -c \"git reflog -n 100 \""
     execute "normal! gg"
@@ -33,7 +33,7 @@ endfunction
 
 function! git#GitShowCommit()
     let l:selected_commit = expand("<cword>")
-    call helpers#OpenScratchBuffer()
+    call git#helpers#OpenScratchBuffer()
     execute "normal! gg"
     execute "read !bash -c \"git show " . l:selected_commit . "\""
     execute "normal! gg"
@@ -46,7 +46,7 @@ function! git#GitCommitTerminal()
 endfunction
 
 function! git#GitCommitEditMessage()
-    call helpers#OpenScratchBuffer()
+    call git#helpers#OpenScratchBuffer()
     nunmap <buffer> j
     nunmap <buffer> k
     nunmap <buffer> <CR>
@@ -61,13 +61,13 @@ function! git#GitCommitEditMessage()
         nunmap <buffer> <leader>gnc
         normal! ggdGI pclose to close this window
 
-        if helpers#CountRemainingWindows() > 1
+        if git#helpers#CountRemainingWindows() > 1
             silent! pclose
         endif
     endfunction
 
     function! git#GitCommitDone()
-        " call helpers#OpenScratchBuffer()
+        " call git#helpers#OpenScratchBuffer()
         " silent wincmd P
         silent execute "normal! /Available commands\<cr>"
         1,$-1d  " delete all lines except for the last one
@@ -80,12 +80,12 @@ function! git#GitCommitEditMessage()
     nnoremap <buffer> <leader>gnc :call GitCommitDispose()<CR>
 
     execute "normal! O\<cr>"
-    call helpers#WriteLine('Available commandhelpers#')
-    call helpers#WriteLine('===================')
-    call helpers#WriteLine('')
-    call helpers#WriteLine('gc - commit')
-    call helpers#WriteLine('gnc - do not commit')
-    call helpers#WriteLine('')
+    call git#helpers#WriteLine('Available commandgit#helpers#')
+    call git#helpers#WriteLine('===================')
+    call git#helpers#WriteLine('')
+    call git#helpers#WriteLine('gc - commit')
+    call git#helpers#WriteLine('gnc - do not commit')
+    call git#helpers#WriteLine('')
     normal! GA
 endfunction
 
@@ -93,33 +93,33 @@ function! git#GitBlame()
     let l:current_file = expand("%")
     let l:current_line = line(".")
 
-    call helpers#OpenScratchBuffer()
+    call git#helpers#OpenScratchBuffer()
 
     execute "normal! gg"
-    call helpers#WriteLine('Available commandhelpers#')
-    call helpers#WriteLine('===================')
-    call helpers#WriteLine('')
-    call helpers#WriteLine('gsh - show')
-    call helpers#WriteLine('')
+    call git#helpers#WriteLine('Available commandgit#helpers#')
+    call git#helpers#WriteLine('===================')
+    call git#helpers#WriteLine('')
+    call git#helpers#WriteLine('gsh - show')
+    call git#helpers#WriteLine('')
 
     silent execute 'read !git blame --date=relative '  . l:current_file
     execute "normal! gg" . l:current_line . "j5jzz"
 
     nnoremap <buffer> <leader>gsh :call GitShowCommit()<CR>
 
-    call helpers#BufferReadOnly()
+    call git#helpers#BufferReadOnly()
 endfunction
 
 function! git#GitLog()
-    call helpers#OpenScratchBuffer()
+    call git#helpers#OpenScratchBuffer()
 
     execute "normal! gg"
-    call helpers#WriteLine('Available commandhelpers#')
-    call helpers#WriteLine('===================')
-    call helpers#WriteLine('')
-    call helpers#WriteLine('gsh - show')
-    call helpers#WriteLine('gn - next commit')
-    call helpers#WriteLine('')
+    call git#helpers#WriteLine('Available commandgit#helpers#')
+    call git#helpers#WriteLine('===================')
+    call git#helpers#WriteLine('')
+    call git#helpers#WriteLine('gsh - show')
+    call git#helpers#WriteLine('gn - next commit')
+    call git#helpers#WriteLine('')
 
     silent execute 'read !git log --oneline --max-count 15 --format="\%h: [\%an] \%s"' 
     execute "normal! gg"
@@ -127,23 +127,23 @@ function! git#GitLog()
     nnoremap <buffer> <leader>gsh :call GitShowCommit()<CR>
     nnoremap <buffer> <leader>gn /\x\{7}:<cr>z<CR>:nohlsearch<CR>
 
-    call helpers#BufferReadOnly()
+    call git#helpers#BufferReadOnly()
 endfunction
 
 function! git#GitStatus()
-    call helpers#OpenScratchBuffer()
+    call git#helpers#OpenScratchBuffer()
 
     silent execute "read !git status --short" 
     execute "normal! gg"
-    call helpers#WriteLine('Available commandhelpers#')
-    call helpers#WriteLine('===================')
-    call helpers#WriteLine('')
-    call helpers#WriteLine('gaf - add')
-    call helpers#WriteLine('gk - checkout')
-    call helpers#WriteLine('gn - next file')
-    call helpers#WriteLine('')
+    call git#helpers#WriteLine('Available commandgit#helpers#')
+    call git#helpers#WriteLine('===================')
+    call git#helpers#WriteLine('')
+    call git#helpers#WriteLine('gaf - add')
+    call git#helpers#WriteLine('gk - checkout')
+    call git#helpers#WriteLine('gn - next file')
+    call git#helpers#WriteLine('')
 
-    call helpers#CdToGitRoot()
+    call git#helpers#CdToGitRoot()
 
     vnoremap <buffer> <leader>gaf y:silent !git add <C-R>"<CR>:call GitStatus()<CR>
     nnoremap <buffer> <leader>gaf y$:silent !git add <C-R>"<cr>:call GitStatus()<CR>
@@ -151,30 +151,30 @@ function! git#GitStatus()
     nnoremap <buffer> <leader>gk y$:silent !git checkout -- <C-R>"<cr>:call GitStatus()<CR>
     nnoremap <buffer> <leader>gn j^w
 
-    call helpers#BufferReadOnly()
+    call git#helpers#BufferReadOnly()
 endfunction
 
 function! git#GitDiff(args)
-    call helpers#OpenScratchBuffer()
+    call git#helpers#OpenScratchBuffer()
 
     silent execute "read !git diff -w " . a:args
     silent g/warning: LF will be replaced by CRLF in/normal! dd 
     silent g/The file will have its original line endings in your working directory./normal! dd 
     execute "normal! gg"
 
-    call helpers#WriteLine('Available commandhelpers#')
-    call helpers#WriteLine('===================')
-    call helpers#WriteLine('')
-    call helpers#WriteLine('gaf/CR - add a file')
-    call helpers#WriteLine('gk - checkout file')
-    call helpers#WriteLine('gr - reset file')
-    call helpers#WriteLine('j - next file')
-    call helpers#WriteLine('k - previous file')
-    call helpers#WriteLine('')
+    call git#helpers#WriteLine('Available commandgit#helpers#')
+    call git#helpers#WriteLine('===================')
+    call git#helpers#WriteLine('')
+    call git#helpers#WriteLine('gaf/CR - add a file')
+    call git#helpers#WriteLine('gk - checkout file')
+    call git#helpers#WriteLine('gr - reset file')
+    call git#helpers#WriteLine('j - next file')
+    call git#helpers#WriteLine('k - previous file')
+    call git#helpers#WriteLine('')
 
     setlocal filetype=diff 
 
-    call helpers#CdToGitRoot()
+    call git#helpers#CdToGitRoot()
 
     let @d=a:args
 
@@ -189,7 +189,7 @@ function! git#GitDiff(args)
     nnoremap <buffer> <leader>k ?+++ b<cr>nz<CR>6l:nohlsearch<CR>
     nnoremap <buffer> <CR> y$:silent !git add <C-R>"<cr>:call GitDiff('<C-R>d')<CR>
 
-    call helpers#BufferReadOnly()
+    call git#helpers#BufferReadOnly()
 endfunction
 
 function! git#GitNewBranch()
@@ -198,26 +198,26 @@ function! git#GitNewBranch()
 endfunction
 
 function! git#GitHelp()
-    call helpers#OpenScratchBuffer()
-    call helpers#WriteLine("Git commandhelpers#\<cr>")
-    call helpers#WriteLine("gaa: Add all")
-    call helpers#WriteLine("gaf: Add file under cursor")
-    call helpers#WriteLine("gdf: git diff")
-    call helpers#WriteLine("gdc: git diff --cached")
-    call helpers#WriteLine("glo: git log")
-    call helpers#WriteLine("gfo: git fetch")
-    call helpers#WriteLine("gpb: git push")
-    call helpers#WriteLine("gbr: git branch")
-    call helpers#WriteLine("gbl: git blame")
-    call helpers#WriteLine("gst: git status")
-    call helpers#WriteLine("gco: git commit")
-    call helpers#WriteLine("gch: git checkout -b")
-    call helpers#WriteLine("grl: git reflog")
-    call helpers#WriteLine("gmm: git fetch/merge origin/master")
-    call helpers#WriteLine("\<cr>")
-    call helpers#WriteLine("General commandhelpers#")
-    call helpers#WriteLine("chelpers# close scratch buffer")
+    call git#helpers#OpenScratchBuffer()
+    call git#helpers#WriteLine("Git commandgit#helpers#\<cr>")
+    call git#helpers#WriteLine("gaa: Add all")
+    call git#helpers#WriteLine("gaf: Add file under cursor")
+    call git#helpers#WriteLine("gdf: git diff")
+    call git#helpers#WriteLine("gdc: git diff --cached")
+    call git#helpers#WriteLine("glo: git log")
+    call git#helpers#WriteLine("gfo: git fetch")
+    call git#helpers#WriteLine("gpb: git push")
+    call git#helpers#WriteLine("gbr: git branch")
+    call git#helpers#WriteLine("gbl: git blame")
+    call git#helpers#WriteLine("gst: git status")
+    call git#helpers#WriteLine("gco: git commit")
+    call git#helpers#WriteLine("gch: git checkout -b")
+    call git#helpers#WriteLine("grl: git reflog")
+    call git#helpers#WriteLine("gmm: git fetch/merge origin/master")
+    call git#helpers#WriteLine("\<cr>")
+    call git#helpers#WriteLine("General commandgit#helpers#")
+    call git#helpers#WriteLine("cgit#helpers# close scratch buffer")
     execute "normal! gg"
 
-    call helpers#BufferReadOnly()
+    call git#helpers#BufferReadOnly()
 endfunction

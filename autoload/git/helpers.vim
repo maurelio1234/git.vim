@@ -1,37 +1,37 @@
 let s:git_scratch_buffer = '__GitScratch__'
 
-function! helpers#OpenScratchBuffer()
-    call helpers#OpenTempBuffer(s:git_scratch_buffer)
+function! git#helpers#OpenScratchBuffer()
+    call git#helpers#OpenTempBuffer(s:git_scratch_buffer)
 endfunction
 
-function! helpers#CdToGitRoot()
-    let l:git_root = helpers#FindFolder(".git") . "/.."
-    call helpers#WriteLine("Locally changing directory to : " . l:git_root)
+function! git#helpers#CdToGitRoot()
+    let l:git_root = git#helpers#FindFolder(".git") . "/.."
+    call git#helpers#WriteLine("Locally changing directory to : " . l:git_root)
     execute "lcd " . l:git_root
 endfunction
 
-function! helpers#OpenTempBuffer(name)
+function! git#helpers#OpenTempBuffer(name)
     execute "edit " . a:name
     setlocal modifiable noreadonly
     setlocal nobuflisted buftype=nofile bufhidden=wipe
     execute "normal! ggdG" 
 endfunction
 
-function! helpers#CountRemainingWindows()
+function! git#helpers#CountRemainingWindows()
     let t:window_count = 0
     silent windo let t:window_count = t:window_count + 1
     return t:window_count
 endfunction
 
-function! helpers#WriteLine(line)
+function! git#helpers#WriteLine(line)
     execute "normal! I" .  a:line . "\<cr>"
 endfunction
 
-function! helpers#BufferReadOnly()
+function! git#helpers#BufferReadOnly()
     setlocal nomodifiable readonly
 endfunction
 
-function! helpers#FindFolder(folder)
+function! git#helpers#FindFolder(folder)
     let current_dir = expand("%:p:h") 
 
     let i = 0
