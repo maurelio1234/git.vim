@@ -1,5 +1,7 @@
+let s:git_scratch_buffer = '__GitScratch__'
+
 function! helpers#OpenScratchBuffer()
-    call helpers#OpenTempBuffer(helpers#git_scratch_buffer)
+    call helpers#OpenTempBuffer(s:git_scratch_buffer)
 endfunction
 
 function! helpers#CdToGitRoot()

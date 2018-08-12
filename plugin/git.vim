@@ -3,20 +3,19 @@ if !has('nvim') || exists('git_vim_loaded')
 endif
 
 let git_vim_loaded = 1
-let s:git_scratch_buffer = '__GitScratch__'
 
 command! -nargs=1 GitPush !bash -c "git push origin HEAD:<args>"
 command! GitAddAll silent !git add -A
-command! GitBlame git#GitBlame()
+command! GitBlame call git#GitBlame()
 command! GitBranchCurrent echom 'Current branch: ' . GetCurrentBranch()
-command! GitBranchNew git#GitNewBranch()
-command! GitCommit git#GitCommitTerminal()
-command! GitDiff git#GitDiff('')
-command! GitDiffCached git#GitDiff('--cached')
+command! GitBranchNew call git#GitNewBranch()
+command! GitCommit call git#GitCommitTerminal()
+command! GitDiff call git#GitDiff('')
+command! GitDiffCached call git#GitDiff('--cached')
 command! GitFetch silent terminal bash -c "git fetch"
-command! GitHelp git#GitHelp()
-command! GitLog git#GitLog()
-command! GitFetchMaster git#GitFetchAndMergeOriginMaster()
-command! GitPushCurrentBranch git#PushToCurrentBranch()
-command! GetRefLog git#GitRefLog()
-command! GitStatus git#GitStatus()
+command! GitHelp call git#GitHelp()
+command! GitLog call git#GitLog()
+command! GitFetchMaster call git#GitFetchAndMergeOriginMaster()
+command! GitPushCurrentBranch call git#PushToCurrentBranch()
+command! GetRefLog call git#GitRefLog()
+command! GitStatus call git#GitStatus()
