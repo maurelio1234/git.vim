@@ -11,7 +11,7 @@ endfunction
 function! git#PushToCurrentBranch()
     call git#helpers#OpenScratchBuffer()
     execute "normal! gg"
-    silent execute "read !bash -c \"git push origin HEAD:" .  GetCurrentBranch() . "\""
+    silent execute "read !bash -c \"git push origin HEAD:" .  git#GetCurrentBranch() . "\""
     execute "normal! gg"
     silent!  /http
 endfunction
@@ -57,7 +57,7 @@ function! git#GitCommitEditMessage()
     execute "normal! ggA: " 
 
     function! git#GitCommitDispose()
-        nnoremap <buffer> <leader>gc :call GitCommitEditMessage()<CR>
+        nnoremap <buffer> <leader>gc :call git#GitCommitEditMessage()<CR>
         nunmap <buffer> <leader>gnc
         normal! ggdGI pclose to close this window
 
@@ -73,14 +73,14 @@ function! git#GitCommitEditMessage()
         1,$-1d  " delete all lines except for the last one
 
         silent write !bash -c 'git commit --file=-'
-        call GitCommitDispose()
+        call git#GitCommitDispose()
     endfunction
 
-    nnoremap <buffer> <leader>gc :call GitCommitDone()<cr>
-    nnoremap <buffer> <leader>gnc :call GitCommitDispose()<CR>
+    nnoremap <buffer> <leader>gc :call git#GitCommitDone()<cr>
+    nnoremap <buffer> <leader>gnc :call git#GitCommitDispose()<CR>
 
     execute "normal! O\<cr>"
-    call git#helpers#WriteLine('Available commandgit#helpers#')
+    call git#helpers#WriteLine('Available commands')
     call git#helpers#WriteLine('===================')
     call git#helpers#WriteLine('')
     call git#helpers#WriteLine('gc - commit')
@@ -96,7 +96,7 @@ function! git#GitBlame()
     call git#helpers#OpenScratchBuffer()
 
     execute "normal! gg"
-    call git#helpers#WriteLine('Available commandgit#helpers#')
+    call git#helpers#WriteLine('Available commands')
     call git#helpers#WriteLine('===================')
     call git#helpers#WriteLine('')
     call git#helpers#WriteLine('gsh - show')
@@ -105,7 +105,7 @@ function! git#GitBlame()
     silent execute 'read !git blame --date=relative '  . l:current_file
     execute "normal! gg" . l:current_line . "j5jzz"
 
-    nnoremap <buffer> <leader>gsh :call GitShowCommit()<CR>
+    nnoremap <buffer> <leader>gsh :call git#GitShowCommit()<CR>
 
     call git#helpers#BufferReadOnly()
 endfunction
@@ -114,7 +114,7 @@ function! git#GitLog()
     call git#helpers#OpenScratchBuffer()
 
     execute "normal! gg"
-    call git#helpers#WriteLine('Available commandgit#helpers#')
+    call git#helpers#WriteLine('Available commands')
     call git#helpers#WriteLine('===================')
     call git#helpers#WriteLine('')
     call git#helpers#WriteLine('gsh - show')
@@ -124,7 +124,7 @@ function! git#GitLog()
     silent execute 'read !git log --oneline --max-count 15 --format="\%h: [\%an] \%s"' 
     execute "normal! gg"
 
-    nnoremap <buffer> <leader>gsh :call GitShowCommit()<CR>
+    nnoremap <buffer> <leader>gsh :call git#GitShowCommit()<CR>
     nnoremap <buffer> <leader>gn /\x\{7}:<cr>z<CR>:nohlsearch<CR>
 
     call git#helpers#BufferReadOnly()
@@ -135,7 +135,7 @@ function! git#GitStatus()
 
     silent execute "read !git status --short" 
     execute "normal! gg"
-    call git#helpers#WriteLine('Available commandgit#helpers#')
+    call git#helpers#WriteLine('Available commands')
     call git#helpers#WriteLine('===================')
     call git#helpers#WriteLine('')
     call git#helpers#WriteLine('gaf - add')
@@ -145,10 +145,10 @@ function! git#GitStatus()
 
     call git#helpers#CdToGitRoot()
 
-    vnoremap <buffer> <leader>gaf y:silent !git add <C-R>"<CR>:call GitStatus()<CR>
-    nnoremap <buffer> <leader>gaf y$:silent !git add <C-R>"<cr>:call GitStatus()<CR>
-    vnoremap <buffer> <leader>gk y:silent !git checkout -- <C-R>"<CR>:call GitStatus()<CR>
-    nnoremap <buffer> <leader>gk y$:silent !git checkout -- <C-R>"<cr>:call GitStatus()<CR>
+    vnoremap <buffer> <leader>gaf y:silent !git add <C-R>"<CR>:call git#GitStatus()<CR>
+    nnoremap <buffer> <leader>gaf y$:silent !git add <C-R>"<cr>:call git#GitStatus()<CR>
+    vnoremap <buffer> <leader>gk y:silent !git checkout -- <C-R>"<CR>:call git#GitStatus()<CR>
+    nnoremap <buffer> <leader>gk y$:silent !git checkout -- <C-R>"<cr>:call git#GitStatus()<CR>
     nnoremap <buffer> <leader>gn j^w
 
     call git#helpers#BufferReadOnly()
@@ -162,7 +162,7 @@ function! git#GitDiff(args)
     silent g/The file will have its original line endings in your working directory./normal! dd 
     execute "normal! gg"
 
-    call git#helpers#WriteLine('Available commandgit#helpers#')
+    call git#helpers#WriteLine('Available commands')
     call git#helpers#WriteLine('===================')
     call git#helpers#WriteLine('')
     call git#helpers#WriteLine('gaf/CR - add a file')
@@ -178,16 +178,16 @@ function! git#GitDiff(args)
 
     let @d=a:args
 
-    vnoremap <buffer> <leader>gaf y:silent !git add <C-R>"<CR>:call GitDiff('<C-R>d')<CR>
-    nnoremap <buffer> <leader>gaf y$:silent !git add <C-R>"<cr>:call GitDiff('<C-R>d')<CR>
-    vnoremap <buffer> <leader>gk y:silent !git checkout -- <C-R>"<CR>:call GitDiff('<C-R>d')<CR>
-    nnoremap <buffer> <leader>gk y$:silent !git checkout -- <C-R>"<cr>:call GitDiff('<C-R>d')<CR>
-    vnoremap <buffer> <leader>gr y:silent !git  reset HEAD <C-R>"<CR>:call GitDiff('<C-R>d')<CR>
-    nnoremap <buffer> <leader>gr y$:silent !git reset HEAD <C-R>"<cr>:call GitDiff('<C-R>d')<CR>
+    vnoremap <buffer> <leader>gaf y:silent !git add <C-R>"<CR>:call git#GitDiff('<C-R>d')<CR>
+    nnoremap <buffer> <leader>gaf y$:silent !git add <C-R>"<cr>:call git#GitDiff('<C-R>d')<CR>
+    vnoremap <buffer> <leader>gk y:silent !git checkout -- <C-R>"<CR>:call git#GitDiff('<C-R>d')<CR>
+    nnoremap <buffer> <leader>gk y$:silent !git checkout -- <C-R>"<cr>:call git#GitDiff('<C-R>d')<CR>
+    vnoremap <buffer> <leader>gr y:silent !git  reset HEAD <C-R>"<CR>:call git#GitDiff('<C-R>d')<CR>
+    nnoremap <buffer> <leader>gr y$:silent !git reset HEAD <C-R>"<cr>:call git#GitDiff('<C-R>d')<CR>
     nnoremap <buffer> <leader>gn /+++ b<cr>z<CR>6l:nohlsearch<CR>
     nnoremap <buffer> <leader>j /+++ b<cr>z<CR>6l:nohlsearch<CR>
     nnoremap <buffer> <leader>k ?+++ b<cr>nz<CR>6l:nohlsearch<CR>
-    nnoremap <buffer> <CR> y$:silent !git add <C-R>"<cr>:call GitDiff('<C-R>d')<CR>
+    nnoremap <buffer> <CR> y$:silent !git add <C-R>"<cr>:call git#GitDiff('<C-R>d')<CR>
 
     call git#helpers#BufferReadOnly()
 endfunction
@@ -199,7 +199,7 @@ endfunction
 
 function! git#GitHelp()
     call git#helpers#OpenScratchBuffer()
-    call git#helpers#WriteLine("Git commandgit#helpers#\<cr>")
+    call git#helpers#WriteLine("Git commands\<cr>")
     call git#helpers#WriteLine("gaa: Add all")
     call git#helpers#WriteLine("gaf: Add file under cursor")
     call git#helpers#WriteLine("gdf: git diff")
@@ -215,8 +215,8 @@ function! git#GitHelp()
     call git#helpers#WriteLine("grl: git reflog")
     call git#helpers#WriteLine("gmm: git fetch/merge origin/master")
     call git#helpers#WriteLine("\<cr>")
-    call git#helpers#WriteLine("General commandgit#helpers#")
-    call git#helpers#WriteLine("cgit#helpers# close scratch buffer")
+    call git#helpers#WriteLine("General commands")
+    call git#helpers#WriteLine("cs close scratch buffer")
     execute "normal! gg"
 
     call git#helpers#BufferReadOnly()
