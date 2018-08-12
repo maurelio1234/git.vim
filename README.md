@@ -4,7 +4,7 @@ My git related vim bindings
 
 ## TODO
 
-- [ ] Autoload
+- [x] Autoload
 - [ ] Documentation
 - [ ] Saner mappings
 - [ ] Keep a change log
