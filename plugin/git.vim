@@ -6,6 +6,8 @@ let git_vim_loaded = 1
 
 command! -nargs=1 GitPush !bash -c "git push origin HEAD:<args>"
 command! GitAddAll silent !git add -A
+command! GitAddCurrentFile silent !git add %
+command! GitCheckoutCurrentFile silent !git checkout %
 command! GitBlame call git#GitBlame()
 command! GitBranchCurrent echom 'Current branch: ' . GetCurrentBranch()
 command! GitBranchNew call git#GitNewBranch()
