@@ -11,9 +11,8 @@ endfunction
 function! git#PushToCurrentBranch()
     call git#helpers#OpenScratchBuffer()
     execute "normal! gg"
-    silent execute "read !bash -c \"git push origin HEAD:" .  git#GetCurrentBranch() . "\""
-    execute "normal! gg"
-    silent!  /http
+    silent execute "term bash -c \"git push origin $(git remote | fzf --prompt 'Choose remote: '):" .  git#GetCurrentBranch() . "\""
+    startinsert!
 endfunction
 
 function! git#GitFetchAndMergeOriginMaster()
